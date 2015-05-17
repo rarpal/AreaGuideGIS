@@ -1,0 +1,170 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Content/leaflet.css" rel="stylesheet" />
+<script src="~/Scripts/leaflet.js"></script>
+@*<script src="/Scripts/jquery-1.10.2.min.js"></script>*@
+@*<script src="/Scripts/angular/angular.js"></script>*@
+@*<script src="/Scripts/bootstrap.js"></script>
+<script src="/Scripts/respond.js"></script>*@
+
+@*<script src="~/Scripts/app/areaguides/appModule.js"></script>
+<script src="~/Scripts/app/areaguides/ctrlHome.js"></script>
+<script src="~/Scripts/app/areaguides/ctrlAbout.js"></script>
+<script src="~/Scripts/app/areaguides/ctrlContact.js"></script>
+<script src="~/Scripts/app/areaguides/ctrlMapping.js"></script>*@
+
+<div ng-controller="ctrlAreaMapping">
+    @*<h2>Mapping</h2>*@
+    <div class="form-group">
+        <div class="input-group">
+            <lable for="postcode">Post Code: </lable>
+            <input id="postcode" type="text" size="10" />
+            <input class="radio-inline" id="Radio1" type="radio" name="areatype" value="OLG" checked="checked" ng-model="areaType" />LSOA
+            <input class="radio-inline" id="Radio2" type="radio" name="areatype" value="OMG" ng-model="areaType" />MSOA
+            <input class="btn btn-default" id="Button1" type="button" value="Load" ng-click="areaFromPostCode()" />
+        </div>
+        <input class="btn btn-default" id="Button2" type="button" value="Load from Area Guide" ng-click="loadAllAreaGuide()" />
+        <div id="map" style="width:1024px; height:500px"></div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Area ID</th>
+                <th>Type</th>
+                <th>Avg Price</th>
+                <th>Rating</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="areaguide in areaGuides">
+                <td>{{areaguide.AreaID}}</td>
+                <td>{{areaguide.Type}}</td>
+                <td>{{areaguide.AvgPrice}}</td>
+                <td>{{areaguide.Rating}}</td>
+                <td>{{areaguide.Notes}}</td>
+                <td ng-init="mapArea(areaguide.AreaID,areaguide)"></td>
+                <td class="input-append">
+                    <a ng-href="#!/AreaMapping/Edit/{{areaguide.ID}}">Edit</a>
+                    <a ng-href="#!/AreaMapping/Delete/{{areaguide.ID}}">Delete</a>
+                    @*<button ng-click="clearArea(areaguide.AreaID)">Clear</button>*@
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+    var areaData = null;
+    var map = L.map('map').setView([51.343, -0.18], 13);
+    var tileoptions = {
+        //subdomains: 'abcd',
+        subdomains: '1234',
+        attribution: 'Map data OpenStreetMaps and MapQuest',
+        //attribution: "Map and data © <a href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>",
+        //attribution: "Maps from <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> and contributors <a href='http://creativecommons.org/licenses/by-sa/3.0/'>CC-BY-SA</a>",
+        maxZoom: 17
+    };
+    //L.tileLayer('http://localhost/GISLeaflet/Tiles/{z}/{x}/{y}.png', tileoptions).addTo(map);
+    L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', tileoptions).addTo(map);
+    //L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', tileoptions).addTo(map);
+    //L.tileLayer('http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png', tileoptions).addTo(map);
+
+    $(document).ready(function () {
+        //
+        console.log("ready!");
+    });
+
+    //function AreaFromPostCode() {
+    //    $.ajax({
+    //        type: "GET",
+    //        crossDomain: true,
+    //        url: 'http://mapit.mysociety.org/postcode/' + $('#Text1').val(),
+    //        //contentType: 'application/json; charset=utf-8',
+    //        success: function (data) {
+    //            $.each(data["areas"], function (k, v) {
+    //                if (v.type == $("input:radio[name='type']:checked").val()) {
+    //                    LoadAreaGuide(v.id).done(function (data) {
+    //                        if (data.length != 0) {
+    //                            MapAreaGuide(data);
+    //                        } else {
+    //                            MapArea(v.id, null);
+    //                        }
+    //                    });
+    //                }
+    //            })
+    //        }
+    //    });
+    //}
+
+    //function AreaFromAreaGuide() {
+    //    LoadAllAreaGuide().done(function (data) {
+    //        MapAreaGuide(data);
+    //    });
+    //}
+ 
+    //function LoadAreaGuide(areaID) {
+    //    return $.ajax({
+    //        type: "GET",
+    //        crossDomain: true,
+    //        dataType: "json",
+    //        url: '/Mapping/LoadAreaGuide?areaID=' + areaID
+    //        //url: '/Mapping/LoadAreaGuide/' + areaID
+    //    }).always(function(){
+
+    //    });
+    //}
+
+    //function LoadAllAreaGuide() {
+    //    return $.ajax({
+    //        type: "GET",
+    //        crossDomain: true,
+    //        dataType: "json",
+    //        //url: '/Mapping/LoadAllAreaGuide'
+    //        url: '/api/AreaGuidesAPI'
+    //    }).always(function(){
+
+    //    });
+    //}
+
+    //function MapAreaGuide(areaGuide) {
+    //    for (area in areaGuide) {
+    //        MapArea(areaGuide[area]["AreaID"], areaGuide[area]).done(function (data) {
+    //            //data.bindPopup("I am here");
+    //        });
+    //    }
+    //}
+
+    //function MapArea(areaID,areaGuide) {
+    //    return $.ajax({
+    //        type: "GET",
+    //        crossDomain: true,
+    //        url: 'http://mapit.mysociety.org/area/' + areaID + '.geojson',
+    //        //contentType: 'application/json; charset=utf-8',
+    //        success: function (data) {
+    //            var polygon = L.geoJson(data, {
+    //                style: function (feature) {
+    //                    return { fill: "#ababab" };
+    //                }
+    //            });
+    //            if (areaGuide != null) {
+    //                var popupInfo =
+    //                    "ID: " + areaGuide["ID"].toString() + ", Area ID: " + areaGuide["AreaID"].toString() + "<br>" +
+    //                    "Area Type: " + areaGuide["Type"].toString() + "<br>" +
+    //                    "Rating: " + areaGuide["Rating"].toString() + "<br>" +
+    //                    "Avg Price: " + areaGuide["AvgPrice"].toString() + "<br>" +
+    //                    "Notes: " + areaGuide["Notes"].toString() + "<br>" +
+    //                    "<a href='#!/Mapping/Edit/" + areaGuide["ID"].toString() + "'>Edit</a>";
+    //                polygon.bindPopup(popupInfo).addTo(map);
+    //            } else {
+    //                var popupInfo = "Area ID: " + areaID.toString();
+    //                polygon.bindPopup(popupInfo).addTo(map);
+    //            }
+    //         }
+    //    });
+    //}
+
+</script>
