@@ -173,6 +173,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AreaGuidesAPIController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AreaMappingController.cs" />
@@ -201,10 +202,14 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MappingViewModels.cs" />
+    <Compile Include="Models\User.cs">
+      <DependentUpon>AreaGuideModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Table_User.sql" />
     <Content Include="DevNotes.txt" />
     <Content Include="Scripts\app\areaguides\appModule.js" />
     <Content Include="App_Data\Table_AreaGuide.sql" />
@@ -522,6 +527,7 @@
     <Content Include="Scripts\angular\i18n\angular-locale_zu.js" />
     <Content Include="Scripts\angular\version.txt" />
     <Content Include="Scripts\app\areaguides\ctrlAbout.js" />
+    <Content Include="Scripts\app\areaguides\ctrlAccount.js" />
     <Content Include="Scripts\app\areaguides\ctrlAreaCreate.js" />
     <Content Include="Scripts\app\areaguides\ctrlAreaEdit.js" />
     <Content Include="Scripts\app\areaguides\ctrlContact.js" />
@@ -555,6 +561,8 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -587,6 +595,8 @@
     <Content Include="Views\AreaMapping\Edit.cshtml" />
     <Content Include="Views\AreaMapping\Create.cshtml" />
     <Content Include="Views\AreaMapping\Delete.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\AreaMapping\Map.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -15,20 +15,16 @@ namespace AreaGuideGIS.Models
 using System;
     using System.Collections.Generic;
     
-public partial class AreaGuide
+public partial class User
 {
 
-    public string AreaID { get; set; }
-
-    public string Type { get; set; }
-
-    public Nullable<decimal> AvgPrice { get; set; }
-
-    public Nullable<byte> Rating { get; set; }
-
-    public string Notes { get; set; }
-
     public int ID { get; set; }
+
+    public string UserName { get; set; }
+
+    public string Password { get; set; }
+
+    public string Roles { get; set; }
 
 }
 

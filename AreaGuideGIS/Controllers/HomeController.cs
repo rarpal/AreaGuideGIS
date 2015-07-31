@@ -20,6 +20,7 @@ namespace AreaGuideGIS.Controllers
             return PartialView();
         }
 
+        [Authorize]
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

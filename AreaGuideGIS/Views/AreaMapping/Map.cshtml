@@ -1,0 +1,199 @@
+﻿<link href="~/Content/leaflet.css" rel="stylesheet" />
+<script src="~/Scripts/leaflet.js"></script>
+<script src="/Scripts/jquery-1.10.2.min.js"></script>
+
+
+    @*<h2>Mapping</h2>*@
+    <div class="form-group">
+        <div class="input-group">
+            <lable for="postcode">Post Code: </lable>
+            <input id="postcode" type="text" size="10" />
+            <input class="radio-inline" id="Radio1" type="radio" name="areatype" value="OLG" checked="checked" ng-model="areaType" />LSOA
+            <input class="radio-inline" id="Radio2" type="radio" name="areatype" value="OMG" ng-model="areaType" />MSOA
+            <input class="btn btn-default" id="Button1" type="button" value="Load" onclick="AreaFromPostCode()" />
+        </div>
+        <input class="btn btn-default" id="Button2" type="button" value="Load from Area Guide" />
+        <div id="map" style="width:1024px; height:500px"></div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Area ID</th>
+                <th>Type</th>
+                <th>Avg Price</th>
+                <th>Rating</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+
+<script>
+
+    var areaData = null;
+    var map = L.map('map').setView([51.343, -0.18], 13);
+    var tileoptions = {
+        //subdomains: 'abcd',
+        subdomains: '1234',
+        attribution: 'Map data OpenStreetMaps and MapQuest',
+        //attribution: "Map and data © <a href='http://www.openstreetmap.org'>OpenStreetMap</a> and contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>",
+        //attribution: "Maps from <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> and contributors <a href='http://creativecommons.org/licenses/by-sa/3.0/'>CC-BY-SA</a>",
+        maxZoom: 17
+    };
+    //L.tileLayer('http://localhost/GISLeaflet/Tiles/{z}/{x}/{y}.png', tileoptions).addTo(map);
+    L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', tileoptions).addTo(map);
+    //L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', tileoptions).addTo(map);
+    //L.tileLayer('http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png', tileoptions).addTo(map);
+
+    $(document).ready(function () {
+        //
+        console.log("ready!");
+    });
+
+    function AreaFromPostCode() {
+        $.ajax({
+            type: "GET",
+            crossDomain: true,
+            url: 'http://mapit.mysociety.org/postcode/' + $('#postcode').val(),
+            //contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                console.log(data);
+                $.each(data["areas"], function (k, v) {
+                    if (v.type == $("input:radio[name='areatype']:checked").val()) {
+                        LoadAreaGuide(v.id).done(function (data) {
+                            if (data != null) {
+                                MapAreaGuide(data);
+                            } else {
+                                MapArea(v.id, null);
+                            }
+                        });
+                    }
+                })
+            }
+        });
+    }
+
+    //function AreaFromAreaGuide() {
+    //    LoadAllAreaGuide().done(function (data) {
+    //        MapAreaGuide(data);
+    //    });
+    //}
+
+    function LoadAreaGuide(areaID) {
+        return $.ajax({
+            type: "GET",
+            crossDomain: true,
+            dataType: "json",
+            //url: '/Mapping/LoadAreaGuide?areaID=' + areaID
+            //url: '/Mapping/LoadAreaGuide/' + areaID
+            url: '/api/AreaGuidesAPI/GetByAreaID/' + areaID
+        }).always(function(){
+
+        });
+    }
+
+    //function LoadAllAreaGuide() {
+    //    return $.ajax({
+    //        type: "GET",
+    //        crossDomain: true,
+    //        dataType: "json",
+    //        //url: '/Mapping/LoadAllAreaGuide'
+    //        url: '/api/AreaGuidesAPI'
+    //    }).always(function(){
+
+    //    });
+    //}
+
+    function MapAreaGuide(areaGuide) {
+        console.log("MapAreaGuide");
+        for (area in areaGuide) {
+            MapArea(areaGuide[area]["AreaID"], areaGuide[area]).done(function (data) {
+                //data.bindPopup("I am here");
+            });
+        }
+    }
+
+    function MapArea(areaID, areaGuide) {
+        console.log("MapArea");
+        return $.ajax({
+            type: "GET",
+            crossDomain: true,
+            url: 'http://mapit.mysociety.org/area/' + areaID + '.geojson',
+            //contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                var fillcolor = "#ABABAB";
+                var popupInfo = "";
+                if (areaGuide != null) {
+                    switch (areaGuide["Rating"]) {
+                        case 1:
+                            fillcolor = "#8B3626";
+                            break;
+                        case 2:
+                            fillcolor = "#8B5A2B";
+                            break;
+                        case 3:
+                            fillcolor = "#E3CF57";
+                            break;
+                        case 4:
+                            fillcolor = "#00CDCD";
+                            break;
+                        case 5:
+                            fillcolor = "#00C957";
+                            break;
+                    }
+                    popupInfo =
+                        "ID: " + areaGuide["ID"].toString() + ", Area ID: " + areaGuide["AreaID"].toString() + "<br>" +
+                        "Area Type: " + areaGuide["Type"].toString() + "<br>" +
+                        "Rating: " + areaGuide["Rating"].toString() + "<br>" +
+                        "Avg Price: " + areaGuide["AvgPrice"].toString() + "<br>" +
+                        "Notes: " + areaGuide["Notes"].toString() + "<br>" +
+                        "<a href='/AreaMapping/Edit/" + areaGuide["ID"].toString() + "'>Edit</a>";
+                } else {
+                    popupInfo =
+                        "Area ID: " + areaID.toString() + "<br>" +
+                        "<a href='/AreaMapping/Create/" + areaID.toString() + "'>Create</a>";
+                }
+
+                var polygon = L.geoJson(data, {
+                    style: function (feature) {
+                        return {
+                            fillColor: fillcolor,
+                            weight: 2,
+                            opacity: 1,
+                            color: 'white',
+                            dashArray: '3',
+                            fillOpacity: 0.7
+                        };
+                    }
+                });
+                polygon.bindPopup(popupInfo).addTo(map);
+            }
+
+            //success: function (data) {
+            //    var polygon = L.geoJson(data, {
+            //        style: function (feature) {
+            //            return { fill: "#ababab" };
+            //        }
+            //    });
+            //    if (areaGuide != null) {
+            //        var popupInfo =
+            //            "ID: " + areaGuide["ID"].toString() + ", Area ID: " + areaGuide["AreaID"].toString() + "<br>" +
+            //            "Area Type: " + areaGuide["Type"].toString() + "<br>" +
+            //            "Rating: " + areaGuide["Rating"].toString() + "<br>" +
+            //            "Avg Price: " + areaGuide["AvgPrice"].toString() + "<br>" +
+            //            "Notes: " + areaGuide["Notes"].toString() + "<br>" +
+            //            "<a href='#!/Mapping/Edit/" + areaGuide["ID"].toString() + "'>Edit</a>";
+            //        polygon.bindPopup(popupInfo).addTo(map);
+            //    } else {
+            //        var popupInfo = "Area ID: " + areaID.toString();
+            //        polygon.bindPopup(popupInfo).addTo(map);
+            //    }
+            // }
+        });
+    }
+
+</script>
+

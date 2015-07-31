@@ -18,17 +18,25 @@ namespace AreaGuideGIS.Controllers
             return PartialView();
         }
 
+        public ActionResult Map()
+        {
+            return PartialView();
+        }
+
         // GET: AreaGuides/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             return PartialView();
         }
 
+        [Authorize]
         public ActionResult Create(string areaid)
         {
             return PartialView();
         }
 
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             return PartialView();
