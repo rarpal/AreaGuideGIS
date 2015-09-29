@@ -24,19 +24,19 @@ angular
             controller: 'ctrlContact',
         });
         $routeProvider.when('/AreaMapping', {
-            templateUrl: '/AreaMapping/Index',
+            templateUrl: 'AreaMapping/Index',
             controller: 'ctrlAreaMapping'
         });
         $routeProvider.when('/AreaMapping/Edit/:param', {
-            templateUrl: '/AreaMapping/Edit',
+            templateUrl: function (params) { return 'AreaMapping/Edit' + params.param; },
             controller: 'ctrlAreaEdit'
         });
         $routeProvider.when('/AreaMapping/Create/:param', {
-            templateUrl: '/AreaMapping/Create',
+            templateUrl: function (params) { return 'AreaMapping/Create/' + params.param; },
             controller: 'ctrlAreaCreate'
         });
         $routeProvider.when('/AreaMapping/Delete/:param', {
-            templateUrl: '/AreaMapping/Delete',
+            templateUrl: function (params) { return '/AreaMapping/Delete' + params.param; },
             controller: 'ctrlAreaEdit'
         });
 

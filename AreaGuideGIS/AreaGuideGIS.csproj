@@ -17,9 +17,9 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -534,6 +534,7 @@
     <Content Include="Scripts\app\areaguides\ctrlHome.js" />
     <Content Include="Scripts\app\areaguides\ctrlAreaMapping.js" />
     <None Include="Properties\PublishProfiles\AreaGuideGIS.pubxml" />
+    <None Include="Properties\PublishProfiles\RaviPC.pubxml" />
     <None Include="Scripts\app\areaguides\_references.js" />
     <Content Include="Scripts\app\areaguides\svcAreaMapping.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -597,6 +598,7 @@
     <Content Include="Views\AreaMapping\Delete.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\AreaMapping\Map.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

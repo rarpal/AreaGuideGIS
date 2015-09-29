@@ -12,7 +12,7 @@ angular
         $scope.loadAllAreaGuide = function () {
             $http({
                 method: 'GET',
-                url: '/api/AreaGuidesAPI'
+                url: 'api/AreaGuidesAPI'
             }).success(function (data) {
                 $scope.areaGuides = data;
             });
@@ -48,7 +48,7 @@ angular
                 type: "GET",
                 crossDomain: true,
                 dataType: "json",
-                url: '/api/AreaGuidesAPI/GetByAreaID/' + areaID
+                url: 'api/AreaGuidesAPI/GetByAreaID/' + areaID
             }).always(function () {
 
             });

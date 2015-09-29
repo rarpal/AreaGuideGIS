@@ -21,6 +21,15 @@ namespace AreaGuideGIS.Controllers
         [AllowAnonymous]
         public ActionResult Login(User model, string returnUrl)
         {
+            if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") & !returnUrl.StartsWith("/\\"))
+            {
+                returnUrl = "/#!" + returnUrl;
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (ModelState.IsValid)
             {
                 using (DBEntitiesAreaGuide entities = new DBEntitiesAreaGuide())
@@ -33,24 +42,21 @@ namespace AreaGuideGIS.Controllers
                     if (userValid)
                     {
                         FormsAuthentication.SetAuthCookie(username, false);
-                        if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") & !returnUrl.StartsWith("/\\"))
-                        {
-                            return Redirect(returnUrl);
-                            //return RedirectToAction("Create", "AreaMapping");
-                        }
-                        else
-	                    {
-                            return RedirectToAction("Index", "Home");
-	                    }
-                    }
-                    else
-	                {
-                        ModelState.AddModelError("", "The user name or password is incorrect!");
                     }
                 }
-            }
 
-            return View(model);
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+             }
+        }
+
+        [AllowAnonymous]
+        public ActionResult Register(string returnUrl)
+        {
+            return View();
         }
 
         public ActionResult LogOff()
