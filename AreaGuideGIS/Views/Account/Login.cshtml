@@ -4,37 +4,45 @@
     ViewBag.Title = "Login";
 }
 
-<h2>Login</h2>
-
-@*<script src="~/Scripts/jquery.validate.min.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
-
-@using (Html.BeginForm())
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
 {
-    @Html.ValidationSummary(true)
-    <fieldset>
-        <legend>Enter user credentials</legend>
-        
-        <div class="editor-label">
-            @Html.LabelFor(model => model.UserName)
-        </div>
-        <div class="editor-label">
-            @Html.EditorFor(model => model.UserName)
-            @Html.ValidationMessageFor(model => model.UserName)
+   @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" id="v">
+        <h4>User Login</h4>
+        <h5>@ViewBag.Msg</h5>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, "Login Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Password)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
         </div>
-        <div class="editor-label">
-            @Html.PasswordFor(model => model.Password)
-            @Html.ValidationMessageFor(model => model.Password)
-        </div>
-        <p />
-        <p>
-            <input type="submit" value="Login" />
-        </p>
 
-    </fieldset>    
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.Roles, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Roles, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Roles, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+        <input name="returnUrl" hidden="hidden" value=@ViewBag.ReturnUrl />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Login" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
     
+    @Html.ActionLink("Register", "Register", "Account", new {returnUrl = @ViewBag.ReturnUrl}, null);
 }

@@ -14,6 +14,7 @@ namespace AreaGuideGIS.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -43,6 +44,10 @@ namespace AreaGuideGIS.Controllers
                     {
                         FormsAuthentication.SetAuthCookie(username, false);
                     }
+                    else
+                    {
+                        ViewBag.Msg = "Invalid Login !";
+                    }
                 }
 
                 return Redirect(returnUrl);
@@ -56,6 +61,41 @@ namespace AreaGuideGIS.Controllers
         [AllowAnonymous]
         public ActionResult Register(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult Register(User model, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                using (DBEntitiesAreaGuide entities = new DBEntitiesAreaGuide())
+                {
+                    string username = model.UserName;
+                    string password = model.Password;
+
+                    bool userExists = entities.Users.Any(user => user.UserName == username);
+                    if (!userExists)
+                    {
+                        entities.Users.Add(model);
+                        entities.SaveChanges();
+                        ViewBag.Msg = "Login created";
+                        ViewBag.Returnurl = returnUrl;
+                    }
+                    else
+                    {
+                        ViewBag.Msg = "Login exists !";
+                        ViewBag.Returnurl = returnUrl;
+                    }
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            
             return View();
         }
 
