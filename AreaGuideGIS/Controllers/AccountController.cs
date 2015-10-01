@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using AreaGuideGIS.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AreaGuideGIS.Controllers
 {
@@ -35,14 +37,15 @@ namespace AreaGuideGIS.Controllers
             {
                 using (DBEntitiesAreaGuide entities = new DBEntitiesAreaGuide())
                 {
-                    string username = model.UserName;
-                    string password = model.Password;
+                    var loginUser = entities.Users.Where(user => user.UserName == model.UserName).Select(user => new {username = user.UserName, password = user.Password, salt = user.salt});
+                    string password = loginUser.First().password;
+                    string salt = loginUser.First().salt;
+                    PasswordManager pwdMan = new PasswordManager();
 
-                    bool userValid = entities.Users.Any(user => user.UserName == username && user.Password == password);
-
+                    bool userValid = pwdMan.IsPasswordMatch(model.UserName, salt, password);
                     if (userValid)
                     {
-                        FormsAuthentication.SetAuthCookie(username, false);
+                        FormsAuthentication.SetAuthCookie(model.UserName, false);
                     }
                     else
                     {
@@ -73,12 +76,16 @@ namespace AreaGuideGIS.Controllers
             {
                 using (DBEntitiesAreaGuide entities = new DBEntitiesAreaGuide())
                 {
-                    string username = model.UserName;
-                    string password = model.Password;
-
-                    bool userExists = entities.Users.Any(user => user.UserName == username);
+                    bool userExists = entities.Users.Any(user => user.UserName == model.UserName);
+ 
                     if (!userExists)
                     {
+                        PasswordManager pwdMan = new PasswordManager();
+                        string salt = null;
+                        string pwHash = pwdMan.GeneratePasswordHash(model.Password, out salt);
+                        model.Password = pwHash;
+                        model.salt = salt;
+
                         entities.Users.Add(model);
                         entities.SaveChanges();
                         ViewBag.Msg = "Login created";
@@ -104,6 +111,67 @@ namespace AreaGuideGIS.Controllers
             FormsAuthentication.SignOut();
 
             return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public static class SaltGenerator
+    {
+        private static RNGCryptoServiceProvider m_cryptoServiceProvider = null;
+        private const int SALT_SIZE = 24;
+
+        static SaltGenerator()
+        {
+            m_cryptoServiceProvider = new RNGCryptoServiceProvider();
+        }
+
+        public static string GetSaltString()
+        {
+            // Lets create a byte array to store the salt bytes
+            byte[] saltBytes = new byte[SALT_SIZE];
+
+            // lets generate the salt in the byte array
+            m_cryptoServiceProvider.GetNonZeroBytes(saltBytes);
+
+            // Let us get some string representation for this salt
+            string saltString = Encoding.Default.GetString(saltBytes);
+
+            // Now we have our salt string ready lets return it to the caller
+            return saltString;
+        }
+    }
+
+    public class HashComputer
+    {
+        public string GetPasswordHashAndSalt(string message)
+        {
+            // Let us use SHA256 algorithm to 
+            // generate the hash from this salted password
+            SHA256 sha = new SHA256CryptoServiceProvider();
+            byte[] dataBytes = Encoding.Default.GetBytes(message);
+            byte[] resultBytes = sha.ComputeHash(dataBytes);
+
+            // return the hash string to the caller
+            return Encoding.Default.GetString(resultBytes);
+        }
+    }
+
+    public class PasswordManager
+    {
+        HashComputer m_hashComputer = new HashComputer();
+
+        public string GeneratePasswordHash(string plainTextPassword, out string salt)
+        {
+            salt = SaltGenerator.GetSaltString();
+
+            string finalString = plainTextPassword + salt;
+
+            return m_hashComputer.GetPasswordHashAndSalt(finalString);
+        }
+
+        public bool IsPasswordMatch(string password, string salt, string hash)
+        {
+            string finalString = password + salt;
+            return hash == m_hashComputer.GetPasswordHashAndSalt(finalString);
         }
     }
 }

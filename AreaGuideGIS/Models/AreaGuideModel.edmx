@@ -24,6 +24,8 @@
           <Property Name="UserName" Type="varchar(max)" Nullable="false" />
           <Property Name="Password" Type="varchar(max)" Nullable="false" />
           <Property Name="Roles" Type="varchar(max)" />
+          <Property Name="Email" Type="varchar(max)" />
+          <Property Name="salt" Type="varchar(max)" />
         </EntityType>
         <EntityContainer Name="SampleLeafletModelsStoreContainer">
           <EntitySet Name="AreaGuide" EntityType="Self.AreaGuide" Schema="dbo" store:Type="Tables" />
@@ -56,6 +58,8 @@
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Roles" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="salt" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -78,6 +82,8 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="SampleLeaflet.Models.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="salt" ColumnName="salt" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Roles" ColumnName="Roles" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
