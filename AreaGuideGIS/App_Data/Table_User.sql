@@ -1,5 +1,4 @@
-﻿
-/****** Object:  Table [dbo].[AreaGuide]    Script Date: 27/04/2015 23:41:45 ******/
+﻿/****** Object:  Table [dbo].[User]    Script Date: 01/10/2015 12:38:58 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -10,15 +9,18 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[User](
-	[ID] [int] NOT NULL IDENTITY,
+	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[UserName] [varchar](max) NOT NULL,
 	[Password] [varchar](max) NOT NULL,
-	[Roles] [varchar](max) NULL
-) ON [PRIMARY]
+	[Roles] [varchar](max) NULL,
+	[Email] [varchar](max) NULL,
+	[salt] [varchar](max) NULL,
+ CONSTRAINT [pk_User] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
-GO
-
-ALTER TABLE dbo.[User] ADD CONSTRAINT pk_User PRIMARY KEY (ID)
 GO
 
 SET ANSI_PADDING OFF
