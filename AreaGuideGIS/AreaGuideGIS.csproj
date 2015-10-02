@@ -210,13 +210,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\Table_User.sql" />
-    <Content Include="DevNotes.txt" />
     <Content Include="Scripts\app\areaguides\appModule.js" />
     <Content Include="App_Data\Table_AreaGuide.sql" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\leaflet.css" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -608,7 +606,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

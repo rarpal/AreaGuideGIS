@@ -140,6 +140,26 @@ namespace AreaGuideGIS.Controllers
         }
     }
 
+    public static class APIKeyGenerator
+    {
+        private static RNGCryptoServiceProvider m_cryptoServiceProvider = null;
+        private const int APIKEY_SIZE = 32;
+
+        static APIKeyGenerator()
+        {
+            m_cryptoServiceProvider = new RNGCryptoServiceProvider();
+        }
+
+        public static string GetAPIKey()
+        {
+            byte[] secretKeyBytes = new byte[APIKEY_SIZE];
+            m_cryptoServiceProvider.GetNonZeroBytes(secretKeyBytes);
+            string APIKey = Convert.ToBase64String(secretKeyBytes);
+
+            return APIKey;
+        }
+    }
+
     public class HashComputer
     {
         public string GetPasswordHashAndSalt(string message)

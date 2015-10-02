@@ -12,6 +12,7 @@ using AreaGuideGIS.Models;
 
 namespace AreaGuideGIS.Controllers
 {
+    
     public class AreaGuidesAPIController : ApiController
     {
         private DBEntitiesAreaGuide db = new DBEntitiesAreaGuide();
@@ -35,6 +36,7 @@ namespace AreaGuideGIS.Controllers
             return Ok(areaGuide);
         }
 
+        [Authorize]
         [HttpGet]
         [ResponseType(typeof(AreaGuide))]
         public IHttpActionResult GetByAreaID(string areaID)
