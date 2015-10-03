@@ -15,11 +15,14 @@ CREATE TABLE [dbo].[User](
 	[Roles] [varchar](max) NULL,
 	[Email] [varchar](max) NULL,
 	[salt] [varchar](max) NULL,
+	[APPId] [varchar](max) NULL,
+	[APIKey] [varchar](max) NULL,
  CONSTRAINT [pk_User] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
 
 GO
 

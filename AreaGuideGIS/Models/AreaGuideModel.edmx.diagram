@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="b355ceb0a2cc4345a49db9bd1ffe7bbd" Name="Diagram1">
+      <Diagram DiagramId="b355ceb0a2cc4345a49db9bd1ffe7bbd" Name="Diagram1" ZoomLevel="84">
         <EntityTypeShape EntityType="SampleLeaflet.Models.AreaGuide" Width="1.5" PointX="0.625" PointY="0.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SampleLeaflet.Models.User" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>

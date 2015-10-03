@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AreaGuideGIS.Models;
+using AreaGuideGIS.Filters;
 
 namespace AreaGuideGIS.Controllers
 {
@@ -18,6 +19,7 @@ namespace AreaGuideGIS.Controllers
         private DBEntitiesAreaGuide db = new DBEntitiesAreaGuide();
 
         // GET: api/AreaGuidesAPI
+        //[HMACAuthentication]
         public IEnumerable<AreaGuide> GetAreaGuides()
         {
             return db.AreaGuides;
@@ -36,7 +38,7 @@ namespace AreaGuideGIS.Controllers
             return Ok(areaGuide);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [ResponseType(typeof(AreaGuide))]
         public IHttpActionResult GetByAreaID(string areaID)

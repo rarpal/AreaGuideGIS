@@ -38,11 +38,11 @@ namespace AreaGuideGIS.Controllers
                 using (DBEntitiesAreaGuide entities = new DBEntitiesAreaGuide())
                 {
                     var loginUser = entities.Users.Where(user => user.UserName == model.UserName).Select(user => new {username = user.UserName, password = user.Password, salt = user.salt});
-                    string password = loginUser.First().password;
+                    string pwhash = loginUser.First().password;
                     string salt = loginUser.First().salt;
                     PasswordManager pwdMan = new PasswordManager();
 
-                    bool userValid = pwdMan.IsPasswordMatch(model.UserName, salt, password);
+                    bool userValid = pwdMan.IsPasswordMatch(model.Password, salt, pwhash);
                     if (userValid)
                     {
                         FormsAuthentication.SetAuthCookie(model.UserName, false);
@@ -83,8 +83,11 @@ namespace AreaGuideGIS.Controllers
                         PasswordManager pwdMan = new PasswordManager();
                         string salt = null;
                         string pwHash = pwdMan.GeneratePasswordHash(model.Password, out salt);
+
                         model.Password = pwHash;
                         model.salt = salt;
+                        model.APPId = Guid.NewGuid().ToString();
+                        model.APIKey = APIKeyGenerator.GetAPIKey();
 
                         entities.Users.Add(model);
                         entities.SaveChanges();
@@ -153,9 +156,10 @@ namespace AreaGuideGIS.Controllers
         public static string GetAPIKey()
         {
             byte[] secretKeyBytes = new byte[APIKEY_SIZE];
-            m_cryptoServiceProvider.GetNonZeroBytes(secretKeyBytes);
+            m_cryptoServiceProvider.GetBytes(secretKeyBytes);
             string APIKey = Convert.ToBase64String(secretKeyBytes);
-
+            m_cryptoServiceProvider.Dispose();
+            
             return APIKey;
         }
     }

@@ -30,6 +30,10 @@ public partial class User
 
     public string salt { get; set; }
 
+    public string APPId { get; set; }
+
+    public string APIKey { get; set; }
+
 }
 
 }
