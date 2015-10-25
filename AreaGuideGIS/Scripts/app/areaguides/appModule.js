@@ -20,11 +20,11 @@ angular
         //    controller: 'ctrlAreaMapping',
         //});
         $routeProvider.when('/About', {
-            templateUrl: baseUrl + 'AreaGuideGIS/Home/About',
+            templateUrl: baseUrl + 'Home/About',
             controller: 'ctrlAbout',
         });
         $routeProvider.when('/Contact', {
-            templateUrl: baseUrl + 'AreaGuideGIS/Home/Contact',
+            templateUrl: baseUrl + 'Home/Contact',
             controller: 'ctrlContact',
         });
         $routeProvider.when('/AreaMapping', {
