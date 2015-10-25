@@ -3,6 +3,12 @@ angular
     .module('areaGuides.ctrl.AreaMapping', [])
     .controller('ctrlAreaMapping', ['$scope', '$routeParams', '$location', '$http', 'svcAreaMapping', function ($scope, $routeParams, $location, $http, svcAreaMapping) {
         //debugger;
+
+        // The bellow adjustment to the base url is needed to prevent a double // when request is to a localhost website
+        var baseUrl = $("base").first().attr("href");
+        baseUrl += (baseUrl == "/" ? "" : "/");
+        console.log("base url for relative links = " + baseUrl);
+
         $scope.name = "Area Mapping";
         $scope.areaID = "";
         $scope.areaType = "OLG";
@@ -12,7 +18,7 @@ angular
         $scope.loadAllAreaGuide = function () {
             $http({
                 method: 'GET',
-                url: 'api/AreaGuidesAPI'
+                url: baseUrl + 'api/AreaGuidesAPI'
             }).success(function (data) {
                 $scope.areaGuides = data;
             });
@@ -48,7 +54,7 @@ angular
                 type: "GET",
                 crossDomain: true,
                 dataType: "json",
-                url: 'api/AreaGuidesAPI/GetByAreaID/' + areaID
+                url: baseUrl + 'api/AreaGuidesAPI/GetByAreaID/' + areaID
             }).always(function () {
 
             });
